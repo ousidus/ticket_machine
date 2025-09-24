@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,23 +38,6 @@ export function LoginForm() {
     setLoading(false)
   }
 
-  const handleSignUp = async () => {
-    setLoading(true)
-    setError(null)
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
-    } else {
-      setError('Check your email for the confirmation link!')
-    }
-
-    setLoading(false)
-  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -63,7 +47,7 @@ export function LoginForm() {
           Ticket Manager
         </CardTitle>
         <CardDescription className="text-center">
-          Sign in to your account or create a new one
+          Sign in to your account to access your tickets
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -105,19 +89,17 @@ export function LoginForm() {
             </div>
           )}
           
-          <div className="space-y-2">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleSignUp}
-              disabled={loading}
-            >
-              {loading ? 'Creating account...' : 'Create Account'}
-            </Button>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </Button>
+          
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Don&apos;t have an account?{' '}
+              <Link href="/signup" className="font-medium text-primary hover:underline">
+                Create one here
+              </Link>
+            </p>
           </div>
         </form>
       </CardContent>

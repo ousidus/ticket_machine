@@ -95,22 +95,24 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage
 
-1. **Sign Up/Login**: Create a new account or login with existing credentials
-2. **Create Tickets**: Click "New Ticket" to create a support ticket
-3. **Manage Tickets**: View all your tickets in the dashboard
-4. **Update Status**: Change ticket status from the dropdown (Open → In Progress → Closed)
-5. **Logout**: Use the user menu in the top-right corner
+1. **Create Account**: Visit the signup page to create a new account with email verification
+2. **Login**: Use the login page to access your existing account
+3. **Create Tickets**: Click "New Ticket" to create a support ticket with title, description, and priority
+4. **Manage Tickets**: View all your tickets in the dashboard with status indicators
+5. **Update Status**: Change ticket status from the dropdown (Open → In Progress → Closed)
+6. **Logout**: Use the user menu in the top-right corner to sign out
 
 ## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── dashboard/          # Dashboard page
-│   ├── login/             # Login page
+│   ├── dashboard/          # Main dashboard
+│   ├── login/             # Login page  
+│   ├── signup/            # Account creation page
 │   └── globals.css        # Global styles
 ├── components/            # React components
-│   ├── auth/             # Authentication components
+│   ├── auth/             # Login, signup, and user navigation
 │   ├── layout/           # Layout components
 │   ├── tickets/          # Ticket-related components
 │   └── ui/              # Shadcn/UI components

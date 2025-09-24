@@ -35,7 +35,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/') && session) {
+  // Redirect logged-in users away from auth pages
+  if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup' || request.nextUrl.pathname === '/') && session) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
