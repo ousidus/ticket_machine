@@ -2,17 +2,22 @@
 
 import { useState } from 'react'
 import { Header } from '@/components/layout/header'
-import { TicketForm } from '@/components/tickets/ticket-form'
-import { TicketList } from '@/components/tickets/ticket-list'
-import { Button } from '@/components/ui/button'
-import { Plus, List } from 'lucide-react'
+import { RealTimeTicketList } from '@/components/tickets/real-time-ticket-list'
+import { TicketDetailsModal } from '@/components/tickets/ticket-details-modal'
+import type { Ticket } from '@/types/ticket'
 
 export default function DashboardPage() {
-  const [showForm, setShowForm] = useState(false)
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
-  const handleTicketCreated = () => {
-    setShowForm(false)
-    // The TicketList component will refresh automatically
+  const handleTicketClick = (ticket: Ticket) => {
+    setSelectedTicket(ticket)
+    setShowDetailsModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowDetailsModal(false)
+    setSelectedTicket(null)
   }
 
   return (
@@ -22,42 +27,18 @@ export default function DashboardPage() {
       <main className="container mx-auto py-8 px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Manage your support tickets and track their progress</p>
+          <p className="text-gray-600">Manage your support tickets and track their progress in real-time</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <TicketList />
-          </div>
-          
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <div className="flex gap-2">
-              <Button 
-                onClick={() => setShowForm(!showForm)}
-                className="flex-1"
-                variant={showForm ? "outline" : "default"}
-              >
-                {showForm ? (
-                  <>
-                    <List className="h-4 w-4 mr-2" />
-                    View Tickets
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Ticket
-                  </>
-                )}
-              </Button>
-            </div>
-            
-            {showForm && (
-              <TicketForm onSuccess={handleTicketCreated} />
-            )}
-          </div>
+        <div className="space-y-6">
+          <RealTimeTicketList onTicketClick={handleTicketClick} />
         </div>
+
+        <TicketDetailsModal
+          ticket={selectedTicket}
+          open={showDetailsModal}
+          onOpenChange={handleCloseModal}
+        />
       </main>
     </div>
   )

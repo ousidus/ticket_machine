@@ -74,6 +74,19 @@ export function SignUpForm() {
 
       // For development/testing - sign in immediately after signup
       if (data.user) {
+        // Assign default 'user' role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{
+            user_id: data.user.id,
+            role: 'user'
+          }])
+
+        if (roleError) {
+          console.warn('Failed to assign user role:', roleError)
+          // Continue anyway, role assignment is not critical for signup
+        }
+
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password,

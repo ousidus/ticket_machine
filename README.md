@@ -5,8 +5,15 @@ A simple Next.js application with Supabase authentication and Shadcn/UI for mana
 ## Features
 
 - 🔐 **Authentication**: Secure login and registration with Supabase Auth
-- 🎫 **Ticket Management**: Create, view, and update support tickets
-- 📊 **Dashboard**: Clean interface to manage all your tickets
+- 🎫 **Advanced Ticket Management**: Create, view, and update tickets with attachments and tags
+- 📊 **Real-time Dashboard**: Live updates with automatic refresh when tickets change
+- 🖼️ **File Attachments**: Upload images, documents, and files to tickets (up to 10MB each)
+- 🏷️ **Tags & Categories**: Organize tickets with custom tags
+- 📋 **Kanban Board**: Admin view with drag-and-drop ticket management
+- 👥 **User Assignment**: Assign tickets to team members and reviewers
+- 💬 **Comments System**: Add comments and track ticket discussions
+- 🔍 **Detailed Ticket View**: Full-screen modal with all ticket information
+- ⚡ **Real-time Updates**: Instant updates across all users
 - 🎨 **Modern UI**: Beautiful interface built with Shadcn/UI and Tailwind CSS
 - 📱 **Responsive**: Works great on desktop and mobile devices
 
@@ -52,38 +59,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### 4. Set Up the Database
 
-Run the following SQL in your Supabase SQL editor to create the tickets table:
+Run the SQL from `database_updates.sql` in your Supabase SQL editor to create all necessary tables and policies:
 
-```sql
--- Create tickets table
-CREATE TABLE tickets (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT,
-  status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'closed')),
-  priority TEXT NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
-);
-
--- Enable Row Level Security
-ALTER TABLE tickets ENABLE ROW LEVEL SECURITY;
-
--- Create policy so users can only see their own tickets
-CREATE POLICY "Users can view their own tickets" ON tickets
-  FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert their own tickets" ON tickets
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own tickets" ON tickets
-  FOR UPDATE USING (auth.uid() = user_id);
-
--- Create index for better performance
-CREATE INDEX tickets_user_id_idx ON tickets(user_id);
-CREATE INDEX tickets_created_at_idx ON tickets(created_at);
+```bash
+# Copy and run the contents of database_updates.sql in your Supabase SQL editor
+cat database_updates.sql
 ```
+
+This will create:
+- Enhanced `tickets` table with attachments, tags, and assignment features
+- `user_roles` table for role-based access control
+- `ticket_comments` table for ticket discussions
+- Storage bucket for file attachments
+- Proper Row Level Security policies
+- Performance indexes
 
 ### 5. Run the Development Server
 
@@ -95,12 +84,22 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage
 
-1. **Create Account**: Visit the signup page to create a new account with email verification
+### For Users:
+1. **Create Account**: Visit the signup page to create a new account (no email verification required)
 2. **Login**: Use the login page to access your existing account
-3. **Create Tickets**: Click "New Ticket" to create a support ticket with title, description, and priority
-4. **Manage Tickets**: View all your tickets in the dashboard with status indicators
-5. **Update Status**: Change ticket status from the dropdown (Open → In Progress → Closed)
-6. **Logout**: Use the user menu in the top-right corner to sign out
+3. **Create Tickets**: Click "New Ticket" in the navbar to open the fullscreen ticket creation modal
+4. **Add Attachments**: Upload images, documents, or files to your tickets
+5. **Add Tags**: Organize tickets with custom tags for better categorization
+6. **View Tickets**: See all your tickets in real-time on the dashboard
+7. **Ticket Details**: Click the eye icon to view full ticket details, add comments, and see attachments
+8. **Update Status**: Change ticket status from the dropdown (Open → In Progress → Closed)
+
+### For Admins/Reviewers:
+1. **Admin Dashboard**: Access `/admin` for the kanban board view of all tickets
+2. **Assign Tickets**: Assign tickets to team members from the kanban board
+3. **Manage All Tickets**: View and update tickets from all users
+4. **Real-time Updates**: See changes instantly across all connected users
+5. **Comments**: Add internal comments and track ticket discussions
 
 ## Project Structure
 
